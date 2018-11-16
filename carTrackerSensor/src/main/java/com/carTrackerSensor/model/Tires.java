@@ -1,5 +1,9 @@
 package com.carTrackerSensor.model;
 
+/**
+ * @author Tej 
+ *
+ */
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,11 +19,11 @@ public class Tires {
 	private int id;
 	private double rearLeft;
 
-    private double rearRight;
+	private double rearRight;
 
-    private double frontLeft;
+	private double frontLeft;
 
-    private double frontRight;
+	private double frontRight;
 
 	public double getRearLeft() {
 		return rearLeft;
@@ -53,5 +57,4 @@ public class Tires {
 		this.frontRight = frontRight;
 	}
 
-    
 }

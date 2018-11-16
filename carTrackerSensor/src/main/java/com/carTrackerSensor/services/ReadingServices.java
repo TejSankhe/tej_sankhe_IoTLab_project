@@ -1,5 +1,9 @@
 package com.carTrackerSensor.services;
 
+/**
+ * @author Tej 
+ *
+ */
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,6 +25,7 @@ import com.carTrackerSensor.model.Vehicle;
 import com.carTrackerSensor.repository.ReadingRepository;
 import com.carTrackerSensor.repository.TiresRepository;
 import com.carTrackerSensor.repository.VehicleRepository;
+
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class ReadingServices {
@@ -29,56 +34,69 @@ public class ReadingServices {
 	@Autowired
 	VehicleRepository vehicleRepository;
 	@Autowired
-	TiresRepository  tiresRepository;
+	TiresRepository tiresRepository;
+
+	/**
+	 * Adding or updating vehicles in vehicle table.
+	 * @param reading
+	 */
 	@PostMapping("/readings")
-	public void createUpdateVehicles(@RequestBody Reading reading){
+	public void createUpdateVehicles(@RequestBody Reading reading) {
 		Tires tires = reading.getTires();
-		if(tires.getFrontRight()<32 || tires.getFrontRight()>36) {
+		if (tires.getFrontRight() < 32 || tires.getFrontRight() > 36) {
 			reading.setPriority(Constants.prorityLow);
-		}else if(tires.getFrontLeft()<32 || tires.getFrontLeft()>36) {
+		} else if (tires.getFrontLeft() < 32 || tires.getFrontLeft() > 36) {
 			reading.setPriority(Constants.prorityLow);
-		}else if(tires.getRearLeft()<32 || tires.getRearLeft()>36) {
+		} else if (tires.getRearLeft() < 32 || tires.getRearLeft() > 36) {
 			reading.setPriority(Constants.prorityLow);
-		}else if(tires.getRearRight()<32 || tires.getRearRight()>36) {
+		} else if (tires.getRearRight() < 32 || tires.getRearRight() > 36) {
 			reading.setPriority(Constants.prorityLow);
 		}
-		Optional<Vehicle> data = vehicleRepository .findById(reading.getVin());
+		Optional<Vehicle> data = vehicleRepository.findById(reading.getVin());
 		if (data.isPresent()) {
 			Vehicle vehicle = data.get();
-			if(reading.getEngineRpm() > vehicle.getRedlineRpm()) {
+			if (reading.getEngineRpm() > vehicle.getRedlineRpm()) {
 				reading.setPriority(Constants.prorityHigh);
-			}else if(reading.getFuelVolume()<0.1*vehicle.getMaxFuelVolume()){
+			} else if (reading.getFuelVolume() < 0.1 * vehicle.getMaxFuelVolume()) {
 				reading.setPriority(Constants.prorityMedium);
 			}
 		}
-		    
+
 		readingRepository.save(reading);
-}
-	
-	@GetMapping("/getHighAlerts")
-	public Iterable<Reading> getHighAlerts() {
-		List<Vehicle> vehiclesHighPiority= new ArrayList();
-		Iterable<Reading>  readings = readingRepository.findByPriority(Constants.prorityHigh);
-		for(Reading reading : readings) {
-			Timestamp currentTime= new Timestamp(System.currentTimeMillis());
-	        Calendar c=Calendar.getInstance();
-	        c.add(Calendar.HOUR, -2);
-	        Timestamp timebeforetwohours= new Timestamp(c.getTimeInMillis());
-	        Timestamp readingTime = reading.getTimestamp();
-	        if(readingTime.after(timebeforetwohours) && readingTime.before(currentTime) )
-	        {
-	        	Optional<Vehicle> data = vehicleRepository .findById(reading.getVin());
-	    		if (data.isPresent()) {
-	    			Vehicle vehicle = data.get();
-	        	vehiclesHighPiority.add(vehicle); 
-	    		}
-	        }
-	       
-		}
-		return readings;
-		
 	}
-	
+
+	/**
+	 * Api to get vehicles whose sensor readings is set to high priority alerts
+	 * @return list of Vehicles
+	 */
+	@GetMapping("/getHighAlerts")
+	public List<Vehicle> getHighAlerts() {
+		List<Vehicle> vehiclesHighPiority = new ArrayList();
+		Iterable<Reading> readings = readingRepository.findByPriority(Constants.prorityHigh);
+		for (Reading reading : readings) {
+			Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+			Calendar c = Calendar.getInstance();
+			c.add(Calendar.HOUR, -2);
+			Timestamp timebeforetwohours = new Timestamp(c.getTimeInMillis());
+			Timestamp readingTime = reading.getTimestamp();
+			if (readingTime.after(timebeforetwohours) && readingTime.before(currentTime)) {
+				Optional<Vehicle> data = vehicleRepository.findById(reading.getVin());
+				if (data.isPresent()) {
+					Vehicle vehicle = data.get();
+					vehiclesHighPiority.add(vehicle);
+				}
+			}
+
+		}
+		return vehiclesHighPiority;
+
+	}
+
+	/**
+	 * Api to get historical alerts of given vehicle vin.
+	 * @param vin
+	 * @return Readings 
+	 */
 	@GetMapping("/vehicleHistoricalAlerts/{vin}")
 	public Iterable<Reading> getvehicleHistoricalAlerts(@PathVariable("vin") String vin) {
 		Iterable<Reading> readings = readingRepository.findByVin(vin);

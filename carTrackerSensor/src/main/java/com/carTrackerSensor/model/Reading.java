@@ -1,5 +1,9 @@
 package com.carTrackerSensor.model;
 
+/**
+ * @author Tej 
+ *
+ */
 import java.sql.Timestamp;
 
 import javax.persistence.CascadeType;
@@ -14,36 +18,36 @@ import javax.persistence.OneToOne;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Reading {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	private String vin;
-	
+
 	private boolean checkEngineLightOn;
 
-    private Timestamp timestamp;
+	private Timestamp timestamp;
 
-    private double fuelVolume;
+	private double fuelVolume;
 
-    private double speed;
+	private double speed;
 
-    private double engineRpm;
-    
-    @OneToOne(cascade = CascadeType.ALL)
-    private Tires tires;
+	private double engineRpm;
 
-    private boolean engineCoolantLow;
+	@OneToOne(cascade = CascadeType.ALL)
+	private Tires tires;
 
-    private double longitude;
+	private boolean engineCoolantLow;
 
-    private double latitude;
+	private double longitude;
 
-    private double engineHp;
+	private double latitude;
 
-    private boolean cruiseControlOn;
-    
-    private String priority;
+	private double engineHp;
+
+	private boolean cruiseControlOn;
+
+	private String priority;
 
 	public String getVin() {
 		return vin;
@@ -148,6 +152,5 @@ public class Reading {
 	public void setPriority(String priority) {
 		this.priority = priority;
 	}
-
 
 }
