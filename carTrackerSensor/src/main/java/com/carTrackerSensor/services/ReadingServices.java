@@ -1,11 +1,14 @@
 package com.carTrackerSensor.services;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,4 +53,28 @@ public class ReadingServices {
 		    
 		readingRepository.save(reading);
 }
+	
+	@GetMapping("/getHighAlerts")
+	public List<Vehicle> getHighAlerts() {
+		List<Vehicle> vehiclesHighPiority= new ArrayList();
+		Iterable<Reading>  readings = readingRepository.findByPriority(Constants.prorityHigh);
+		for(Reading reading : readings) {
+			Timestamp currentTime= new Timestamp(System.currentTimeMillis());
+	        Calendar c=Calendar.getInstance();
+	        c.add(Calendar.HOUR, -2);
+	        Timestamp timebeforetwohours= new Timestamp(c.getTimeInMillis());
+	        Timestamp readingTime = reading.getTimestamp();
+	        if(readingTime.after(timebeforetwohours) && readingTime.before(currentTime) )
+	        {
+	        	Optional<Vehicle> data = vehicleRepository .findById(reading.getVin());
+	    		if (data.isPresent()) {
+	    			Vehicle vehicle = data.get();
+	        	vehiclesHighPiority.add(vehicle); 
+	    		}
+	        }
+	         
+		}
+		return vehiclesHighPiority;
+		
+	}
 }
