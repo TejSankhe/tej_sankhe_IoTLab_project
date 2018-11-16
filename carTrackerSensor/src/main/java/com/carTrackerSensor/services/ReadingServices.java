@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,7 +56,7 @@ public class ReadingServices {
 }
 	
 	@GetMapping("/getHighAlerts")
-	public List<Vehicle> getHighAlerts() {
+	public Iterable<Reading> getHighAlerts() {
 		List<Vehicle> vehiclesHighPiority= new ArrayList();
 		Iterable<Reading>  readings = readingRepository.findByPriority(Constants.prorityHigh);
 		for(Reading reading : readings) {
@@ -72,9 +73,16 @@ public class ReadingServices {
 	        	vehiclesHighPiority.add(vehicle); 
 	    		}
 	        }
-	         
+	       
 		}
-		return vehiclesHighPiority;
+		return readings;
 		
 	}
+	
+	@GetMapping("/vehicleHistoricalAlerts/{vin}")
+	public Iterable<Reading> getvehicleHistoricalAlerts(@PathVariable("vin") String vin) {
+		Iterable<Reading> readings = readingRepository.findByVin(vin);
+		return readings;
+	}
+
 }

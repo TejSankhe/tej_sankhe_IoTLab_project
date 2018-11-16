@@ -9,5 +9,8 @@ import com.carTrackerSensor.model.Reading;
 public interface ReadingRepository extends CrudRepository<Reading, Integer>{
 
 	@Query("SELECT r FROM Reading r WHERE r.priority=:priority")
-	Iterable<Reading> findByPriority(@Param("priority") String r);
+	Iterable<Reading> findByPriority(@Param("priority") String priority);
+	
+	@Query("SELECT r FROM Reading r WHERE r.vin=:Vin")
+	Iterable<Reading> findByVin(@Param("Vin") String Vin);
 }
