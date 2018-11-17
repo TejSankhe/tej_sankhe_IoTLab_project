@@ -16,7 +16,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 @Entity
-//@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(name = "Vehicle")
 public class Vehicle {
 	@Id
@@ -87,6 +86,7 @@ public class Vehicle {
 
 	/**
 	 * Updating vehicle details which is already present in database.
+	 * 
 	 * @param vehicle
 	 */
 	public void updateVehicleInfo(Vehicle vehicle) {
@@ -97,15 +97,6 @@ public class Vehicle {
 		this.setYear(vehicle.getYear());
 		this.setRedlineRpm(vehicle.getRedlineRpm());
 		this.setMaxFuelVolume(vehicle.getMaxFuelVolume());
-		/*
-		 * int updatedyear = vehicle.getYear()!=null? vehicle.getYear():this.getYear();
-		 * this.setYear(updatedyear); String updatedRedlineRpm =
-		 * vehicle.getRedlineRpm()!=null? vehicle.getRedlineRpm():this.getRedlineRpm();
-		 * this.setRedlineRpm(updatedRedlineRpm); String updatedMaxFuelVolume =
-		 * vehicle.getMaxFuelVolume()!=null?
-		 * vehicle.getMaxFuelVolume():this.getMaxFuelVolume();
-		 * this.setMaxFuelVolume(updatedMaxFuelVolume);
-		 */
 		Timestamp updatedLastServiceDate = vehicle.getLastServiceDate() != null ? vehicle.getLastServiceDate()
 				: this.getLastServiceDate();
 		this.setLastServiceDate(updatedLastServiceDate);

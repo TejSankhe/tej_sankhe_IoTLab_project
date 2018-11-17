@@ -26,7 +26,7 @@ public class VehicleServices {
 	VehicleRepository vehicleRepository;
 
 	@PutMapping("/vehicles")
-	public String createUpdateVehicles(@RequestBody List<Vehicle> vehicles) {
+	public void createUpdateVehicles(@RequestBody List<Vehicle> vehicles) {
 		for (Vehicle vehicle : vehicles) {
 			Optional<Vehicle> data = vehicleRepository.findById(vehicle.getVin());
 			if (data.isPresent()) {
@@ -37,7 +37,6 @@ public class VehicleServices {
 				vehicleRepository.save(vehicle);
 			}
 		}
-		return "Success";
 	}
 
 	@GetMapping("/getVehiclesDetails")

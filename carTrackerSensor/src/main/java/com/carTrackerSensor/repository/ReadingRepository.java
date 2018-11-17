@@ -14,6 +14,7 @@ public interface ReadingRepository extends CrudRepository<Reading, Integer> {
 
 	/**
 	 * Selects readings based on priority.
+	 * 
 	 * @param priority
 	 * @return matched readings
 	 */
@@ -22,6 +23,7 @@ public interface ReadingRepository extends CrudRepository<Reading, Integer> {
 
 	/**
 	 * Selects readings based on vehicle id.
+	 * 
 	 * @param Vin
 	 * @return matched readings
 	 */

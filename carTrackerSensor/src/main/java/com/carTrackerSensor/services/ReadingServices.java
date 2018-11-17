@@ -38,10 +38,13 @@ public class ReadingServices {
 
 	/**
 	 * Adding or updating vehicles in vehicle table.
+	 * 
 	 * @param reading
 	 */
 	@PostMapping("/readings")
 	public void createUpdateVehicles(@RequestBody Reading reading) {
+		
+		//calculating the alert priority of reading
 		Tires tires = reading.getTires();
 		if (tires.getFrontRight() < 32 || tires.getFrontRight() > 36) {
 			reading.setPriority(Constants.prorityLow);
@@ -61,12 +64,13 @@ public class ReadingServices {
 				reading.setPriority(Constants.prorityMedium);
 			}
 		}
-
+		// inserting reading in reading table in database
 		readingRepository.save(reading);
 	}
 
 	/**
 	 * Api to get vehicles whose sensor readings is set to high priority alerts
+	 * 
 	 * @return list of Vehicles
 	 */
 	@GetMapping("/getHighAlerts")
@@ -74,9 +78,11 @@ public class ReadingServices {
 		List<Vehicle> vehiclesHighPiority = new ArrayList();
 		Iterable<Reading> readings = readingRepository.findByPriority(Constants.prorityHigh);
 		for (Reading reading : readings) {
+			//calculating the current time.
 			Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 			Calendar c = Calendar.getInstance();
 			c.add(Calendar.HOUR, -2);
+			//calculating the time befor two hours.
 			Timestamp timebeforetwohours = new Timestamp(c.getTimeInMillis());
 			Timestamp readingTime = reading.getTimestamp();
 			if (readingTime.after(timebeforetwohours) && readingTime.before(currentTime)) {
@@ -94,8 +100,9 @@ public class ReadingServices {
 
 	/**
 	 * Api to get historical alerts of given vehicle vin.
+	 * 
 	 * @param vin
-	 * @return Readings 
+	 * @return Readings
 	 */
 	@GetMapping("/vehicleHistoricalAlerts/{vin}")
 	public Iterable<Reading> getvehicleHistoricalAlerts(@PathVariable("vin") String vin) {
