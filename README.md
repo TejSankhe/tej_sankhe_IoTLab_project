@@ -21,5 +21,5 @@ Get: http://localhost:8080/vehicleHistoricalAlerts/{vin}
      param: vin is unique identifier of vehicle
 
 ## Setting up project
-Create the schema in Mysql with name 'carsensorsdb' to store tables.
-Run the project on tomcat server, apis are configured to run on port 8080.
+- Create the schema in Mysql with name 'carsensorsdb' to store tables.
+- Run the project on tomcat server, apis are configured to run on port 8080.
